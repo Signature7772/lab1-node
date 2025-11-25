@@ -1,0 +1,30 @@
+{
+  "name": "lab1-node",
+  "version": "1.0.0",
+  "description": "labs for smp",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Signature7772/lab1-node.git"
+  },
+  "keywords": [],
+  "author": "MarkovMaxim",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Signature7772/lab1-node/issues"
+  },
+  "homepage": "https://github.com/Signature7772/lab1-node#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "supertest": "^7.1.4"
+  }
+}
