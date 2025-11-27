@@ -1,0 +1,28 @@
+services:
+  my_mongodb:
+    image: mongo:6.0
+    restart: unless-stopped
+    volumes:
+      - mongo_db_data:/data/db
+    # ports:
+    #   - "27017:27017"
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - my_mongodb
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_DB_HOSTNAME=my_mongodb
+      - MONGO_DB_PORT=27017
+      - MONGO_DB=usersdb
+      - PORT=3000
+    # локальні node_modules для девелопменту:
+    # volumes:
+    #   - .:/usr/src/app
+    #   - /usr/src/app/node_modules
+
+volumes:
+  mongo_db_data:

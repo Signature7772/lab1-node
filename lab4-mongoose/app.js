@@ -1,4 +1,4 @@
-// app.js (lab4-mongoose)
+// app.js (зріз)
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -7,38 +7,26 @@ const app = express();
 app.use(express.json());
 app.use(express.static(__dirname + '/public'));
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017';
-const DB_NAME = process.env.DB_NAME || 'usersdb';
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3003;
+const {
+  MONGO_DB_HOSTNAME = 'localhost',
+  MONGO_DB_PORT = '27017',
+  MONGO_DB = 'usersdb',
+  PORT = 3000
+} = process.env;
 
-// (опціонально) щоб уникнути warning в деяких версіях mongoose
-// mongoose.set('strictQuery', false);
+const url = `mongodb://${MONGO_DB_HOSTNAME}:${MONGO_DB_PORT}/${MONGO_DB}`;
 
-let dbConnection;
-
-// --- ОПИС СХЕМИ й МОДЕЛІ ---
+// схема
 const { Schema } = mongoose;
-const userSchema = new Schema({
-  name: { type: String, required: true, minlength: 3, maxlength: 50 },
-  age: { type: Number, required: true, min: 1, max: 200 }
-}, { versionKey: false }); // відключаємо __v якщо потрібно
-
+const userSchema = new Schema({ name: String, age: Number }, { versionKey: false });
 const User = mongoose.model('User', userSchema);
 
-// --- Підключення до БД через mongoose ---
-async function start() {
-  try {
-    // підключаємося; mongoose сам обробляє опції сучасних драйверів
-    dbConnection = await mongoose.connect(MONGO_URI, { dbName: DB_NAME });
-    console.log('Mongoose connected to', MONGO_URI, 'DB:', DB_NAME);
-
-    app.listen(PORT, () => console.log(`Server (Mongoose) listening at http://localhost:${PORT}`));
-  } catch (err) {
-    console.error('Mongoose connection error:', err);
-    process.exit(1);
-  }
-}
-start();
+mongoose.connect(url, { /* сучасний mongoose сам справляється з опціями */ })
+  .then(() => {
+    console.log('Connected to MongoDB at', url);
+    app.listen(parseInt(PORT, 10), () => console.log(`Server listening at http://localhost:${PORT}`));
+  })
+  .catch(err => { console.error('Mongo connection error:', err); process.exit(1); });
 
 // --- РОУТИ CRUD ---
 
